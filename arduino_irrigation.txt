@@ -1,0 +1,40 @@
+#include <math.h>
+
+int soilMoistureValue = 0;
+int percentage = 0;
+float probability = 0; 
+
+void setup() {
+  pinMode(3, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  soilMoistureValue = analogRead(A0);
+  
+ 
+  percentage = map(soilMoistureValue, 490, 1023, 100, 0);
+  percentage = percentage - 65;  
+
+
+  Serial.print("Moisture Percentage: ");
+  Serial.println(percentage);
+
+ 
+  probability = 1.0 / (1.0 + exp(-(27.3629311 + -0.72922093 * percentage)));
+
+
+  Serial.print("Probability: ");
+  Serial.println(probability);
+
+  
+  if (probability < 0.5) {
+    Serial.println("Pump off");
+    digitalWrite(3, LOW); 
+  } else {
+    Serial.println("Pump on");
+    digitalWrite(3, HIGH);  
+  }
+
+  delay(1000);  
+}
